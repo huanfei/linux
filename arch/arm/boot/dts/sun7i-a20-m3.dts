@@ -68,8 +68,9 @@
 		pinctrl-0 = <&led_pins_m3>;
 
 		blue {
-			label = "m3:blue:usr";
-			gpios = <&pio 7 20 GPIO_ACTIVE_HIGH>;
+			label = "m3:blue:sys";
+			gpios = <&pio 7 22 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "heartbeat";
 		};
 	};
 };
