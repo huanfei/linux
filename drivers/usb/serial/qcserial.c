@@ -116,6 +116,8 @@ static const struct usb_device_id id_table[] = {
 	{USB_DEVICE(0x05c6, 0x9204)},	/* Gobi 2000 QDL device */
 	{USB_DEVICE(0x05c6, 0x9205)},	/* Gobi 2000 Modem device */
 
+    {USB_DEVICE(0x2c7c, 0x0125)},	/* EC25 Modem device */
+
 	/* Gobi 3000 devices */
 	{USB_DEVICE(0x03f0, 0x371d)},	/* HP un2430 Gobi 3000 QDL */
 	{USB_DEVICE(0x05c6, 0x920c)},	/* Gobi 3000 QDL */

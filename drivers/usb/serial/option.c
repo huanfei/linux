@@ -690,6 +690,7 @@ static const struct usb_device_id option_ids[] = {
 	{ USB_DEVICE(QUANTA_VENDOR_ID, QUANTA_PRODUCT_GLX) },
 	{ USB_DEVICE(QUANTA_VENDOR_ID, QUANTA_PRODUCT_GKE) },
 	{ USB_DEVICE(QUANTA_VENDOR_ID, QUANTA_PRODUCT_GLE) },
+	{ USB_DEVICE(0x2c7c, 0x0125) },           //Queuctel EC20
 	{ USB_DEVICE(QUANTA_VENDOR_ID, 0xea42),
 		.driver_info = (kernel_ulong_t)&net_intf4_blacklist },
 	{ USB_DEVICE_AND_INTERFACE_INFO(HUAWEI_VENDOR_ID, 0x1c05, USB_CLASS_COMM, 0x02, 0xff) },
@@ -2034,6 +2035,9 @@ static struct usb_serial_driver option_1port_device = {
 #ifdef CONFIG_PM
 	.suspend           = usb_wwan_suspend,
 	.resume            = usb_wwan_resume,
+#if 1
+	.reset_resume      = usb_wwan_resume,
+#endif
 #endif
 };
 
@@ -2050,7 +2054,7 @@ static int option_probe(struct usb_serial *serial,
 				&serial->interface->cur_altsetting->desc;
 	struct usb_device_descriptor *dev_desc = &serial->dev->descriptor;
 	const struct option_blacklist_info *blacklist;
-
+    
 	/* Never bind to the CD-Rom emulation interface	*/
 	if (iface_desc->bInterfaceClass == 0x08)
 		return -ENODEV;
@@ -2073,6 +2077,16 @@ static int option_probe(struct usb_serial *serial,
 	    iface_desc->bInterfaceClass != USB_CLASS_CDC_DATA)
 		return -ENODEV;
 
+#if 1
+	if (serial->dev->descriptor.idVendor == cpu_to_le16(0x2c7c) && serial->interface->cur_altsetting->desc.bInterfaceNumber>=4 )
+		return -ENODEV;
+	if (serial->dev->descriptor.idVendor == cpu_to_le16(0x2c7c)){
+		  pm_runtime_set_autosuspend_delay(&serial->dev->dev,3000);
+		  usb_enable_autosuspend(serial->dev);
+		}
+#endif
+
+	
 	/* Store the blacklist info so we can use it during attach. */
 	usb_set_serial_data(serial, (void *)blacklist);
 

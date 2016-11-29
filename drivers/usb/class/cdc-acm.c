@@ -1418,6 +1418,11 @@ made_compressed_probe:
 		snd->urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
 		if (quirks & SEND_ZERO_PACKET)
 			snd->urb->transfer_flags |= URB_ZERO_PACKET;
+#if 1
+		if(usb_dev->descriptor.idVendor == 0x1519 && usb_dev->descriptor.idProduct == 0x0020)
+			snd->urb->transfer_flags |=URB_ZERO_PACKET;
+#endif
+
 		snd->instance = acm;
 	}
 
@@ -1488,6 +1493,12 @@ skip_countries:
 		usb_clear_halt(usb_dev, usb_rcvbulkpipe(usb_dev, epread->bEndpointAddress));
 		usb_clear_halt(usb_dev, usb_sndbulkpipe(usb_dev, epwrite->bEndpointAddress));
 	}
+#if 1
+	if((usb_dev->descriptor.idVendor == 0x2c7c)&&(usb_dev->descriptor.idProduct == 0x0125)){
+		pm_runtime_set_autosuspend_delay(&usb_dev->dev,3000);
+		usb_enable_autosuspend(usb_dev);
+	}
+#endif
 
 	return 0;
 alloc_fail8:
